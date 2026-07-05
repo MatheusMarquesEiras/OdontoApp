@@ -49,8 +49,9 @@ await sleep(800);
 // 01 — Primeiro acesso (criar senha)
 await shot('01-primeiro-acesso');
 
-// cria a senha → tela da chave de recuperação
-await page.type('input[type="password"]', '1234');
+// cria a senha (senha + confirmação) → tela da chave de recuperação
+const pwFields = await page.$$('input[type="password"]');
+for (const field of pwFields) await field.type('1234');
 await page.click('button[type="submit"]');
 await sleep(900);
 await shot('02-chave-recuperacao');

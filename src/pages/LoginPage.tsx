@@ -19,6 +19,7 @@ export function LoginPage() {
   const primeiraVez = !senhaDefinida;
   const [mode, setMode] = useState<Mode>(primeiraVez ? 'criar' : 'entrar');
   const [senha, setSenha] = useState('');
+  const [confirmar, setConfirmar] = useState('');
   const [chave, setChave] = useState('');
   const [erro, setErro] = useState('');
 
@@ -29,6 +30,10 @@ export function LoginPage() {
     if (mode === 'criar') {
       if (!senha.trim()) {
         setErro('Escolha uma senha (pode ser simples).');
+        return;
+      }
+      if (senha !== confirmar) {
+        setErro('As senhas não são iguais. Confira e digite de novo.');
         return;
       }
       definirSenha(senha.trim());
@@ -114,6 +119,27 @@ export function LoginPage() {
                 </div>
               </div>
             </div>
+
+            {mode === 'criar' && (
+              <div className="flex flex-col gap-stack-xs">
+                <label className="font-label-lg text-label-lg text-on-surface ml-1">Confirme sua senha</label>
+                <div className="relative">
+                  <input
+                    className="w-full h-20 px-6 font-body-lg text-body-lg bg-surface border-[1.5px] border-outline-variant rounded-lg text-center tracking-[0.4em]"
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmar}
+                    onChange={(e) => setConfirmar(e.target.value)}
+                  />
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-on-surface-variant opacity-40">
+                    <Icon name="lock" />
+                  </div>
+                </div>
+                <span className="text-sm text-on-surface-variant ml-1">
+                  Digite a mesma senha de novo, só para conferir.
+                </span>
+              </div>
+            )}
 
             {erro && (
               <div className="flex items-center gap-2 text-error font-label-lg">
