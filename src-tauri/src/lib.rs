@@ -126,6 +126,16 @@ fn db_backup_now(app: tauri::AppHandle) -> Result<store::BackupEntry, String> {
 }
 
 #[tauri::command]
+fn db_backup_to(app: tauri::AppHandle, path: String) -> Result<store::BackupEntry, String> {
+    store::backup_to(&data_dir(&app)?, std::path::Path::new(&path))
+}
+
+#[tauri::command]
+fn db_get_data_dir(app: tauri::AppHandle) -> Result<String, String> {
+    Ok(data_dir(&app)?.to_string_lossy().to_string())
+}
+
+#[tauri::command]
 fn db_list_backups(app: tauri::AppHandle) -> Result<Vec<store::BackupEntry>, String> {
     Ok(store::list_backups(&data_dir(&app)?))
 }
@@ -134,6 +144,7 @@ fn db_list_backups(app: tauri::AppHandle) -> Result<Vec<store::BackupEntry>, Str
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
         .manage(AppState(Mutex::new(Session::default())))
         .on_window_event(|window, event| {
             // Backup automático ao fechar (§9.5): copia o .db se já houver base.
@@ -156,6 +167,8 @@ pub fn run() {
             db_save_patient,
             db_delete_patient,
             db_backup_now,
+            db_backup_to,
+            db_get_data_dir,
             db_list_backups,
         ])
         .run(tauri::generate_context!())

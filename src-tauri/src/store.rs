@@ -284,6 +284,28 @@ fn count_patients(dir: &Path) -> i64 {
 }
 
 // ── Backup ───────────────────────────────────────────────────
+/// Copia o arquivo do banco para um caminho escolhido pelo usuário.
+pub fn backup_to(src_dir: &Path, dest: &Path) -> Result<BackupEntry, String> {
+    let src = db_path(src_dir);
+    if !src.exists() {
+        return Err("banco ainda não existe".into());
+    }
+    if let Some(parent) = dest.parent() {
+        if !parent.as_os_str().is_empty() {
+            fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+        }
+    }
+    let registros = count_patients(src_dir);
+    fs::copy(&src, dest).map_err(|e| e.to_string())?;
+    Ok(BackupEntry {
+        id: dest.file_name().unwrap_or_default().to_string_lossy().to_string(),
+        criado_em: chrono::Utc::now().to_rfc3339(),
+        registros,
+        tipo: "manual".into(),
+        caminho: dest.to_string_lossy().to_string(),
+    })
+}
+
 /// Copia o arquivo do banco para backups/ carimbado com data e nº de registros.
 pub fn backup(dir: &Path, tipo: &str) -> Result<BackupEntry, String> {
     let src = db_path(dir);

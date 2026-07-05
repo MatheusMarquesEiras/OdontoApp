@@ -30,7 +30,9 @@ export interface Backend {
   savePatient(p: Patient): Promise<void>;
   deletePatient(id: string): Promise<void>;
   backupNow(registros: number): Promise<BackupEntry>;
+  backupTo(path: string): Promise<BackupEntry>;
   listBackups(): Promise<BackupEntry[]>;
+  getDataDir(): Promise<string>;
 }
 
 export const runningInTauri = (): boolean =>
@@ -62,7 +64,9 @@ const tauriBackend: Backend = {
     }),
   deletePatient: (id) => invoke('db_delete_patient', { id }),
   backupNow: () => invoke('db_backup_now'),
+  backupTo: (path) => invoke('db_backup_to', { path }),
   listBackups: () => invoke('db_list_backups'),
+  getDataDir: () => invoke('db_get_data_dir'),
 };
 
 // ── Implementação mock (localStorage) ────────────────────────
@@ -138,8 +142,24 @@ const mockBackend: Backend = {
     writeJson(BKP_KEY, list);
     return entry;
   },
+  async backupTo(path) {
+    const registros = readJson<Patient[]>(PAT_KEY, []).length;
+    const entry: BackupEntry = {
+      id: `bkp-${Date.now().toString(36)}`,
+      criadoEm: new Date().toISOString(),
+      registros,
+      tipo: 'manual',
+      caminho: path,
+    };
+    const list = [entry, ...readJson<BackupEntry[]>(BKP_KEY, [])].slice(0, 8);
+    writeJson(BKP_KEY, list);
+    return entry;
+  },
   async listBackups() {
     return readJson<BackupEntry[]>(BKP_KEY, []);
+  },
+  async getDataDir() {
+    return '(modo navegador — sem arquivo local)';
   },
 };
 

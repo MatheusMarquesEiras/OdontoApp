@@ -197,6 +197,18 @@ export function LoginPage() {
         <p className="mt-stack-lg text-center font-body-md text-on-surface-variant text-[14px]">
           Sistema de Gestão Clínica · v1.0.0
         </p>
+
+        {import.meta.env.DEV && (
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => { localStorage.clear(); location.reload(); }}
+              className="text-xs text-on-surface-variant opacity-50 hover:opacity-100 underline transition-opacity"
+            >
+              [dev] Limpar dados e recomeçar
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
