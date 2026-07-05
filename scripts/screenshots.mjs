@@ -82,6 +82,11 @@ const clickTabByText = async (txt) => {
 await clickTabByText('Anamnese');
 await shot('06-ficha-adulto-anamnese');
 
+// ficha do adulto — aba Exame Intra-oral (odontograma)
+await clickTabByText('Exame Intra-oral');
+await page.evaluate(() => window.scrollTo({ top: 0 }));
+await shot('12-odontograma');
+
 // ficha do adulto — aba Plano de Tratamento (tabela financeira)
 await clickTabByText('Plano de Tratamento');
 await page.evaluate(() => window.scrollTo({ top: 520 }));
