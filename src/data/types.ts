@@ -6,6 +6,12 @@ export type PatientType = 'adulto' | 'crianca';
 
 export type SimNao = 'sim' | 'nao' | '';
 
+/** Estados possíveis de um dente no odontograma (§7.3 / §8.11). */
+export type ToothStatus = 'higido' | 'carie' | 'restaurado' | 'ausente' | 'coroa' | 'tratamento';
+
+/** Mapa número FDI do dente → estado. Ausência de chave = hígido. */
+export type Odontograma = Record<string, ToothStatus>;
+
 /** Uma linha da tabela de tratamentos/financeiro (§9.2). */
 export interface Treatment {
   id: string;
@@ -87,7 +93,9 @@ export interface ChildFicha {
   aleitamentoIdade?: string;
   // §8.4 hábitos
   usaMamadeira?: SimNao;
+  mamadeiraIdade?: string;
   usaChupeta?: SimNao;
+  chupetaIdade?: string;
   chupaDedos?: SimNao;
   roiUnhas?: SimNao;
   ronco?: SimNao;
@@ -99,6 +107,7 @@ export interface ChildFicha {
   tipoEscova?: string;
   marcaCreme?: string;
   cremeFluor?: string;
+  fioDental?: SimNao;
   quemEscova?: string[];
   escovaAntesDormir?: string;
   // §8.6 saúde geral
@@ -154,6 +163,7 @@ export interface Patient {
   // Comuns
   plano?: TreatmentPlan;
   tratamentos?: Treatment[];
+  odontograma?: Odontograma;
   // Metadados
   criadoEm: string;
   atualizadoEm: string;

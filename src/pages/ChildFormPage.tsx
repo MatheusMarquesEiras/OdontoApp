@@ -8,6 +8,7 @@ import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 import { exportPatientDocx } from '../lib/docx';
 import { calcAge } from '../lib/format';
+import { cpfHint } from '../lib/validation';
 import {
   Card,
   TextField,
@@ -17,6 +18,7 @@ import {
   CheckboxGroup,
 } from '../components/ui';
 import { TabsNav, SaveBar, TreatmentsSection, type TabDef } from '../components/patientForm';
+import { Odontograma } from '../components/Odontograma';
 
 const TABS: TabDef[] = [
   { id: 'dados', label: 'Dados', icon: 'person' },
@@ -124,15 +126,49 @@ export function ChildFormPage() {
                 <h4 className="font-label-lg text-label-lg text-secondary border-b pb-2 border-outline-variant">Informações Médicas</h4>
                 <TextArea label="A criança possui alergias?" value={f.alergiasCrianca} onChange={(v) => setFicha({ alergiasCrianca: v })} placeholder="Medicamentos ou alimentos" rows={3} />
                 <TextArea label="Uso contínuo de medicamentos?" value={f.medicamentosContinuos} onChange={(v) => setFicha({ medicamentosContinuos: v })} placeholder="Quais e dosagens?" rows={3} />
-                <SelectField label="Tipo de parto" value={f.tipoParto} onChange={(v) => setFicha({ tipoParto: v })} options={['Normal', 'Cesárea', 'Fórceps']} />
+                <SimNaoToggle label="Faz tratamento com fonoaudiólogo?" value={f.fonoaudiologo} onChange={(v) => setFicha({ fonoaudiologo: v })} />
               </div>
               <div className="space-y-1">
                 <h4 className="font-label-lg text-label-lg text-secondary border-b pb-2 border-outline-variant mb-3">Hábitos Parafuncionais</h4>
                 <SimNaoToggle label="Usa mamadeira?" value={f.usaMamadeira} onChange={(v) => setFicha({ usaMamadeira: v })} />
+                {f.usaMamadeira === 'sim' && <div className="py-2"><TextField label="Até que idade?" value={f.mamadeiraIdade} onChange={(v) => setFicha({ mamadeiraIdade: v })} /></div>}
                 <SimNaoToggle label="Usa chupeta?" value={f.usaChupeta} onChange={(v) => setFicha({ usaChupeta: v })} />
+                {f.usaChupeta === 'sim' && <div className="py-2"><TextField label="Até que idade?" value={f.chupetaIdade} onChange={(v) => setFicha({ chupetaIdade: v })} /></div>}
+                <SimNaoToggle label="Chupa os dedos?" value={f.chupaDedos} onChange={(v) => setFicha({ chupaDedos: v })} />
                 <SimNaoToggle label="Rói unhas?" value={f.roiUnhas} onChange={(v) => setFicha({ roiUnhas: v })} />
+                <SimNaoToggle label="Ronca ao dormir?" value={f.ronco} onChange={(v) => setFicha({ ronco: v })} />
                 <SimNaoToggle label="Respira pela boca?" value={f.respiraBoca} onChange={(v) => setFicha({ respiraBoca: v })} />
                 <SimNaoToggle label="Range/aperta os dentes (bruxismo)?" value={f.bruxismo} onChange={(v) => setFicha({ bruxismo: v })} />
+              </div>
+            </div>
+            <div className="border-t border-outline-variant pt-stack-md">
+              <h4 className="font-label-lg text-label-lg text-secondary border-b pb-2 border-outline-variant mb-4">Gestação, Parto e Aleitamento</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                <SelectField label="Tipo de parto" value={f.tipoParto} onChange={(v) => setFicha({ tipoParto: v })} options={['Normal', 'Cesárea', 'Fórceps']} />
+                <SelectField label="Aleitamento" value={f.aleitamento} onChange={(v) => setFicha({ aleitamento: v })} options={['Materno', 'Artificial', 'Ambos']} />
+                <TextField label="Aleitamento até que idade?" value={f.aleitamentoIdade} onChange={(v) => setFicha({ aleitamentoIdade: v })} />
+              </div>
+              <div className="mt-3">
+                <CheckboxGroup
+                  label="Durante a gestação houve:"
+                  options={['Diabetes gestacional', 'Hipertensão', 'Gravidez de risco', 'Parto prematuro', 'Baixo peso']}
+                  values={[
+                    ...(f.diabetesGestacional === 'sim' ? ['Diabetes gestacional'] : []),
+                    ...(f.hipertensaoGestacional === 'sim' ? ['Hipertensão'] : []),
+                    ...(f.gravidezRisco === 'sim' ? ['Gravidez de risco'] : []),
+                    ...(f.partoPrematuro === 'sim' ? ['Parto prematuro'] : []),
+                    ...(f.baixoPeso === 'sim' ? ['Baixo peso'] : []),
+                  ]}
+                  onChange={(vals) =>
+                    setFicha({
+                      diabetesGestacional: vals.includes('Diabetes gestacional') ? 'sim' : 'nao',
+                      hipertensaoGestacional: vals.includes('Hipertensão') ? 'sim' : 'nao',
+                      gravidezRisco: vals.includes('Gravidez de risco') ? 'sim' : 'nao',
+                      partoPrematuro: vals.includes('Parto prematuro') ? 'sim' : 'nao',
+                      baixoPeso: vals.includes('Baixo peso') ? 'sim' : 'nao',
+                    })
+                  }
+                />
               </div>
             </div>
           </Card>
@@ -152,6 +188,7 @@ export function ChildFormPage() {
               <SelectField label="Escova antes de dormir?" value={f.escovaAntesDormir} onChange={(v) => setFicha({ escovaAntesDormir: v })} options={['Sim', 'Não', 'Às vezes']} />
             </div>
             <CheckboxGroup label="Quem realiza a escovação?" options={QUEM_ESCOVA} values={f.quemEscova} onChange={(v) => setFicha({ quemEscova: v })} />
+            <SimNaoToggle label="Usa fio dental?" value={f.fioDental} onChange={(v) => setFicha({ fioDental: v })} />
             <div className="flex flex-col gap-3">
               <span className="font-label-lg text-label-lg text-primary">Consumo de açúcar / doces</span>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -199,9 +236,14 @@ export function ChildFormPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
               <TextField label="Nome do responsável" value={f.nomeResponsavel} onChange={(v) => setFicha({ nomeResponsavel: v })} />
               <TextField label="RG do responsável" value={f.rgResponsavel} onChange={(v) => setFicha({ rgResponsavel: v })} />
-              <TextField label="CPF do responsável" value={f.cpfResponsavel} onChange={(v) => setFicha({ cpfResponsavel: v })} />
+              <TextField label="CPF do responsável" value={f.cpfResponsavel} onChange={(v) => setFicha({ cpfResponsavel: v })} hint={cpfHint(f.cpfResponsavel)} />
             </div>
             <TextArea label="Outras informações importantes" value={f.outrasInformacoes} onChange={(v) => setFicha({ outrasInformacoes: v })} rows={3} />
+
+            <div className="border-t border-outline-variant pt-stack-md">
+              <h4 className="font-headline-md text-headline-md text-secondary mb-4">Odontograma (dentição decídua)</h4>
+              <Odontograma tipo="crianca" value={draft.odontograma} onChange={(o) => set({ odontograma: o })} />
+            </div>
           </Card>
         )}
 

@@ -8,6 +8,7 @@ import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 import { exportPatientDocx } from '../lib/docx';
 import { calcAge } from '../lib/format';
+import { cpfHint, emailHint } from '../lib/validation';
 import {
   Card,
   TextField,
@@ -17,6 +18,7 @@ import {
   CheckboxGroup,
 } from '../components/ui';
 import { TabsNav, SaveBar, TreatmentsSection, type TabDef } from '../components/patientForm';
+import { Odontograma } from '../components/Odontograma';
 
 const TABS: TabDef[] = [
   { id: 'dados', label: 'Dados Pessoais', icon: 'person' },
@@ -91,19 +93,26 @@ export function AdultFormPage() {
           <Card className="flex flex-col gap-stack-md">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
               <TextField label="Nome Completo" value={draft.nome} onChange={(v) => set({ nome: v })} placeholder="Ex: Maria Oliveira Santos" />
-              <TextField label="CPF" value={draft.cpf} onChange={(v) => set({ cpf: v })} placeholder="000.000.000-00" />
+              <TextField label="CPF" value={draft.cpf} onChange={(v) => set({ cpf: v })} placeholder="000.000.000-00" hint={cpfHint(draft.cpf)} />
               <TextField label="RG" value={draft.rg} onChange={(v) => set({ rg: v })} />
               <TextField label="Data de Nascimento" type="date" value={draft.dataNascimento} onChange={(v) => set({ dataNascimento: v })} />
+              <TextField label="Local de Nascimento" value={draft.localNascimento} onChange={(v) => set({ localNascimento: v })} />
               <SelectField label="Sexo" value={draft.sexo} onChange={(v) => set({ sexo: v })} options={['Feminino', 'Masculino', 'Outro']} />
               <SelectField label="Estado Civil" value={draft.estadoCivil} onChange={(v) => set({ estadoCivil: v })} options={['Solteiro(a)', 'Casado(a)', 'Divorciado(a)', 'Viúvo(a)']} />
               <TextField label="Profissão" value={draft.profissao} onChange={(v) => set({ profissao: v })} />
+              <TextField label="Nº (prontuário)" value={draft.prontuario} onChange={(v) => set({ prontuario: v })} />
               <TextField label="Telefone / WhatsApp" type="tel" value={draft.telefone} onChange={(v) => set({ telefone: v })} placeholder="(11) 99999-9999" />
-              <TextField label="E-mail" type="email" value={draft.email} onChange={(v) => set({ email: v })} placeholder="paciente@email.com" hint={draft.email && !draft.email.includes('@') ? 'E-mail parece incompleto (você ainda pode salvar).' : undefined} />
+              <TextField label="Celular" type="tel" value={draft.celular} onChange={(v) => set({ celular: v })} />
+              <TextField label="Telefone Comercial" type="tel" value={draft.telefoneComercial} onChange={(v) => set({ telefoneComercial: v })} />
+              <TextField label="E-mail" type="email" value={draft.email} onChange={(v) => set({ email: v })} placeholder="paciente@email.com" hint={emailHint(draft.email)} />
               <TextField label="Cidade" value={draft.cidade} onChange={(v) => set({ cidade: v })} />
               <TextField label="UF" value={draft.uf} onChange={(v) => set({ uf: v })} />
+              <TextField label="CEP" value={draft.cep} onChange={(v) => set({ cep: v })} />
+              <TextField label="Início do Tratamento" type="date" value={draft.inicioTratamento} onChange={(v) => set({ inicioTratamento: v })} />
               <TextField label="Indicado por" value={draft.indicadoPor} onChange={(v) => set({ indicadoPor: v })} />
             </div>
-            <TextArea label="Endereço Completo" value={draft.endereco} onChange={(v) => set({ endereco: v })} placeholder="Rua, número, complemento, bairro, cidade, CEP" />
+            <TextArea label="Endereço Residencial" value={draft.endereco} onChange={(v) => set({ endereco: v })} placeholder="Rua, número, complemento, bairro, cidade, CEP" />
+            <TextArea label="Endereço Comercial" value={draft.enderecoComercial} onChange={(v) => set({ enderecoComercial: v })} />
           </Card>
         )}
 
@@ -114,14 +123,35 @@ export function AdultFormPage() {
             <div className="flex flex-col">
               <SimNaoToggle label="Está sob tratamento médico atualmente?" value={a.sobTratamentoMedico} onChange={(v) => setAnamnese({ sobTratamentoMedico: v })} />
               <SimNaoToggle label="Possui alergia a algum medicamento?" value={a.alergiaMedicamento} onChange={(v) => setAnamnese({ alergiaMedicamento: v })} />
+              {a.alergiaMedicamento === 'sim' && (
+                <div className="py-2">
+                  <TextField label="Qual medicamento?" value={a.alergiaMedicamentoQual} onChange={(v) => setAnamnese({ alergiaMedicamentoQual: v })} />
+                </div>
+              )}
+              <SimNaoToggle label="Possui alergia a algum alimento?" value={a.alergiaAlimento} onChange={(v) => setAnamnese({ alergiaAlimento: v })} />
+              {a.alergiaAlimento === 'sim' && (
+                <div className="py-2">
+                  <TextField label="Qual alimento?" value={a.alergiaAlimentoQual} onChange={(v) => setAnamnese({ alergiaAlimentoQual: v })} />
+                </div>
+              )}
               <SimNaoToggle label="É hipertenso ou diabético?" value={a.hipertensoDiabetico} onChange={(v) => setAnamnese({ hipertensoDiabetico: v })} />
               <SimNaoToggle label="Já teve problemas com anestesia local?" value={a.problemaAnestesia} onChange={(v) => setAnamnese({ problemaAnestesia: v })} />
               <SimNaoToggle label="As gengivas sangram com facilidade?" value={a.gengivasSangram} onChange={(v) => setAnamnese({ gengivasSangram: v })} />
+              <SimNaoToggle label="Há retenção de alimentos entre os dentes?" value={a.retencaoAlimentos} onChange={(v) => setAnamnese({ retencaoAlimentos: v })} />
+              <SimNaoToggle label="Morde lápis / caneta?" value={a.mordeLapis} onChange={(v) => setAnamnese({ mordeLapis: v })} />
+              <SimNaoToggle label="Rói as unhas?" value={a.roiUnhas} onChange={(v) => setAnamnese({ roiUnhas: v })} />
+              <SimNaoToggle label="Tem dentes sensíveis ao frio / doces?" value={a.dentesSensiveis} onChange={(v) => setAnamnese({ dentesSensiveis: v })} />
               <SimNaoToggle label="Está grávida?" value={a.gravida} onChange={(v) => setAnamnese({ gravida: v })} />
+              {a.gravida === 'sim' && (
+                <div className="py-2">
+                  <TextField label="De quantos meses?" value={a.gravidaMes} onChange={(v) => setAnamnese({ gravidaMes: v })} />
+                </div>
+              )}
             </div>
             <CheckboxGroup label="Enfermidades" options={ENFERMIDADES} values={a.enfermidades} onChange={(v) => setAnamnese({ enfermidades: v })} />
             <CheckboxGroup label="Uso de anestésicos / drogas" options={ANESTESICOS} values={a.anestesicos} onChange={(v) => setAnamnese({ anestesicos: v })} />
             <CheckboxGroup label="Alergias conhecidas" options={ALERGIAS} values={a.alergias} onChange={(v) => setAnamnese({ alergias: v })} />
+            <TextField label="Outros vícios" value={a.outrosVicios} onChange={(v) => setAnamnese({ outrosVicios: v })} />
             <TextArea label="Observações médicas relevantes" rows={4} value={a.observacoes} onChange={(v) => setAnamnese({ observacoes: v })} />
           </Card>
         )}
@@ -129,7 +159,9 @@ export function AdultFormPage() {
         {/* Exame Intra-oral */}
         {tab === 'exame' && (
           <Card className="flex flex-col gap-stack-md">
-            <h2 className="font-headline-md text-headline-md text-secondary">Condições Gerais</h2>
+            <h2 className="font-headline-md text-headline-md text-secondary">Odontograma</h2>
+            <Odontograma tipo="adulto" value={draft.odontograma} onChange={(o) => set({ odontograma: o })} />
+            <h2 className="font-headline-md text-headline-md text-secondary border-t border-outline-variant pt-stack-md">Condições Gerais</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
               <SelectField label="Higiene" value={e.higiene} onChange={(v) => setExame({ higiene: v })} options={['Ótima', 'Boa', 'Regular', 'Precária']} />
               <SelectField label="Halitose" value={e.halitose} onChange={(v) => setExame({ halitose: v })} options={['Ausente', 'Moderada', 'Forte']} />

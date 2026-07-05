@@ -39,6 +39,7 @@ export const seedPatients: Patient[] = [
       gengiva: 'Normal',
       tecidosMoles: 'Sem alterações relevantes.',
     },
+    odontograma: { '16': 'carie', '17': 'carie', '26': 'restaurado', '36': 'ausente', '11': 'coroa' },
     plano: {
       descricao: 'Restauração dos molares superiores e limpeza profissional.',
       data: '2023-10-15',
@@ -74,6 +75,7 @@ export const seedPatients: Patient[] = [
       autorizaFoto: 'sim',
       alergiasCrianca: 'Nenhuma conhecida.',
     },
+    odontograma: { '54': 'carie', '64': 'restaurado', '75': 'carie' },
     plano: {
       descricao: 'Aplicação de flúor e acompanhamento de cárie inicial.',
       data: '2024-02-10',

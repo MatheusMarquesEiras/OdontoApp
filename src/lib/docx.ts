@@ -13,6 +13,7 @@ import {
 } from 'docx';
 import type { Patient, Treatment } from '../data/types';
 import { formatDate, formatMoney, computeBalances, patientLabel } from './format';
+import { resumoOdontograma } from '../components/Odontograma';
 
 // Exportação DOCX (PLANEJAMENTO.md §9.5 / Etapas 7 e 9).
 // Gera uma "ficha" em layout parecido com o papel. A tia pode abrir no
@@ -127,6 +128,7 @@ function buildAdult(p: Patient): Paragraph[] {
     field('Tártaro', e.tartaro),
     field('Gengiva', e.gengiva),
     field('Tecidos moles', e.tecidosMoles ?? e.mucosa),
+    field('Odontograma', resumoOdontograma(p.odontograma) || 'Sem alterações registradas'),
   ];
 }
 
@@ -159,6 +161,7 @@ function buildChild(p: Patient): Paragraph[] {
     field('Experiência traumática', sn(f.experienciaTraumatica)),
     field('Traumatismo dental', f.traumatismoDental),
     field('Autoriza foto (rede social)', sn(f.autorizaFoto)),
+    field('Odontograma (decíduos)', resumoOdontograma(p.odontograma) || 'Sem alterações registradas'),
     heading('Termo de Responsável'),
     field('Responsável', f.nomeResponsavel),
     field('RG / CPF', [f.rgResponsavel, f.cpfResponsavel].filter(Boolean).join(' / ')),
