@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff7fc; /* surface color */
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#ecdeee",
+                    "surface": "#fff7fc",
+                    "on-surface-variant": "#504251",
+                    "primary-fixed-dim": "#f3aeff",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#e8c4ee",
+                    "surface-container-low": "#fdefff",
+                    "surface-dim": "#e3d6e5",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#f5b7fe",
+                    "on-surface": "#201924",
+                    "secondary-fixed": "#fdd6ff",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#942cb0",
+                    "primary-fixed": "#fdd6ff",
+                    "secondary-fixed-dim": "#efb1f9",
+                    "secondary": "#7e4a8a",
+                    "on-tertiary-fixed-variant": "#583d5f",
+                    "inverse-on-surface": "#faecfc",
+                    "on-secondary-container": "#754281",
+                    "inverse-primary": "#f3aeff",
+                    "surface-container": "#f8e9fa",
+                    "on-primary-fixed": "#340042",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#f2e4f4",
+                    "tertiary-fixed-dim": "#debbe4",
+                    "primary-container": "#8e24aa",
+                    "on-primary-container": "#f7bcff",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#fad7ff",
+                    "primary": "#70008b",
+                    "outline-variant": "#d3c1d2",
+                    "on-secondary-fixed-variant": "#643370",
+                    "on-tertiary-fixed": "#291231",
+                    "surface-variant": "#ecdeee",
+                    "on-background": "#201924",
+                    "error": "#ba1a1a",
+                    "tertiary": "#523859",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#fff7fc",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#790096",
+                    "outline": "#827282",
+                    "inverse-surface": "#362e39",
+                    "tertiary-container": "#6b4f72",
+                    "background": "#fff7fc",
+                    "on-secondary-fixed": "#340141"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-safe": "32px",
+                    "max-width": "1280px",
+                    "stack-md": "2rem",
+                    "stack-xs": "0.5rem",
+                    "stack-sm": "1rem",
+                    "stack-lg": "4rem",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "button-text": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "button-text": ["20px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-lg": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-lg": ["20px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center p-margin-safe">
+<!-- Main Container -->
+<main class="relative w-full max-w-4xl bg-surface-container-low border border-outline-variant rounded-xl p-stack-lg flex flex-col items-center text-center">
+<!-- Close Button (X) -->
+<button class="absolute top-6 right-6 p-stack-xs text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-all duration-200 Active:scale-95">
+<span class="material-symbols-outlined text-4xl">close</span>
+</button>
+<!-- Header -->
+<header class="mb-stack-md">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-stack-sm">
+                Guarde sua Chave de Segurança
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                Esta chave é a única forma de recuperar seu acesso caso esqueça sua senha. Ela não pode ser recuperada se for perdida.
+            </p>
+</header>
+<!-- Key Display Section -->
+<section class="w-full bg-surface-container-highest border border-outline p-stack-md rounded-xl mb-stack-md">
+<div class="flex flex-col items-center gap-stack-sm">
+<span class="font-label-lg text-label-lg text-secondary uppercase tracking-widest">Sua Chave Mestra</span>
+<div class="py-stack-md px-stack-lg select-all">
+<span class="font-headline-lg text-[48px] md:text-[64px] font-extrabold text-primary break-all leading-tight" id="recovery-key">
+                        A1B2-C3D4-E5F6-G7H8-J9K0
+                    </span>
+</div>
+</div>
+</section>
+<!-- Action Buttons -->
+<section class="flex flex-col md:flex-row gap-gutter w-full justify-center mb-stack-lg">
+<button class="flex items-center justify-center gap-stack-xs bg-primary text-on-primary font-button-text text-button-text min-h-[64px] px-10 rounded-xl hover:opacity-90 transition-all Active:scale-95 shadow-sm" onclick="copyKey()">
+<span class="material-symbols-outlined">content_copy</span>
+                Copiar Chave
+            </button>
+<button class="flex items-center justify-center gap-stack-xs border-2 border-primary text-primary font-button-text text-button-text min-h-[64px] px-10 rounded-xl hover:bg-surface-container-high transition-all Active:scale-95" onclick="saveFile()">
+<span class="material-symbols-outlined">download</span>
+                Salvar em arquivo .txt
+            </button>
+</section>
+<!-- Warning Notice -->
+<div class="w-full max-w-3xl bg-error-container text-on-error-container p-stack-md rounded-xl flex flex-col md:flex-row items-center gap-stack-md">
+<div class="flex-shrink-0">
+<span class="material-symbols-outlined text-[48px] text-error">warning</span>
+</div>
+<div class="flex-grow text-left">
+<p class="font-label-lg text-label-lg font-bold mb-1">Importante:</p>
+<p class="font-body-md text-body-md">Cole esta chave em um arquivo e guarde em um pendrive ou HD externo. Evite guardar apenas no seu computador principal.</p>
+</div>
+<button class="bg-on-error-container text-white px-8 py-4 rounded-lg font-bold hover:opacity-80 transition-all whitespace-nowrap" onclick="confirmNotice()">
+                OK
+            </button>
+</div>
+</main>
+<!-- Success Feedback Overlay (Hidden by default) -->
+<div class="fixed top-8 left-1/2 -translate-x-1/2 bg-surface-container-highest border border-primary text-primary px-stack-md py-stack-sm rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 translate-y-[-20px] flex items-center gap-stack-xs" id="toast">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-label-lg text-label-lg">Copiado com sucesso!</span>
+</div>
+<script>
+        function copyKey() {
+            const keyText = document.getElementById('recovery-key').innerText;
+            navigator.clipboard.writeText(keyText).then(() => {
+                showToast('Chave copiada para a área de transferência!');
+            });
+        }
+
+        function saveFile() {
+            const keyText = document.getElementById('recovery-key').innerText;
+            const blob = new Blob([`CHAVE DE RECUPERAÇÃO ODONTOAPP: ${keyText}`], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chave_recuperacao_odontoapp.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Arquivo pronto para download!');
+        }
+
+        function confirmNotice() {
+            // As per requirement: "Botão 'OK' no aviso que não fecha a tela"
+            // We can provide a small visual feedback that the user acknowledged the warning
+            showToast('Aviso confirmado.');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('span:last-child').innerText = message;
+            toast.classList.remove('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+    </script>
+</body></html>

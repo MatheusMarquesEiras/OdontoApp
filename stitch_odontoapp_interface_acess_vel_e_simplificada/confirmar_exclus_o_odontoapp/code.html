@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#ecdeee",
+                    "surface": "#fff7fc",
+                    "on-surface-variant": "#504251",
+                    "primary-fixed-dim": "#f3aeff",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#e8c4ee",
+                    "surface-container-low": "#fdefff",
+                    "surface-dim": "#e3d6e5",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#f5b7fe",
+                    "on-surface": "#201924",
+                    "secondary-fixed": "#fdd6ff",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#942cb0",
+                    "primary-fixed": "#fdd6ff",
+                    "secondary-fixed-dim": "#efb1f9",
+                    "secondary": "#7e4a8a",
+                    "on-tertiary-fixed-variant": "#583d5f",
+                    "inverse-on-surface": "#faecfc",
+                    "on-secondary-container": "#754281",
+                    "inverse-primary": "#f3aeff",
+                    "surface-container": "#f8e9fa",
+                    "on-primary-fixed": "#340042",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#f2e4f4",
+                    "tertiary-fixed-dim": "#debbe4",
+                    "primary-container": "#8e24aa",
+                    "on-primary-container": "#f7bcff",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#fad7ff",
+                    "primary": "#70008b",
+                    "outline-variant": "#d3c1d2",
+                    "on-secondary-fixed-variant": "#643370",
+                    "on-tertiary-fixed": "#291231",
+                    "surface-variant": "#ecdeee",
+                    "on-background": "#201924",
+                    "error": "#ba1a1a",
+                    "tertiary": "#523859",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#fff7fc",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#790096",
+                    "outline": "#827282",
+                    "inverse-surface": "#362e39",
+                    "tertiary-container": "#6b4f72",
+                    "background": "#fff7fc",
+                    "on-secondary-fixed": "#340141"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-safe": "32px",
+                    "max-width": "1280px",
+                    "stack-md": "2rem",
+                    "stack-xs": "0.5rem",
+                    "stack-sm": "1rem",
+                    "stack-lg": "4rem",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "button-text": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "button-text": ["20px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-lg": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-lg": ["20px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .modal-overlay {
+        backdrop-filter: blur(8px);
+        transition: opacity 0.3s ease;
+      }
+      .progress-ring {
+        transition: stroke-dashoffset 1s linear;
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface flex justify-between items-center w-full px-margin-safe h-20 max-w-max-width mx-auto docked full-width top-0 z-10">
+<div class="font-headline-md text-headline-md font-bold text-primary">OdontoApp</div>
+<div class="flex items-center gap-stack-sm">
+<button class="material-symbols-outlined text-primary p-2 rounded-full hover:bg-surface-container-high transition-colors" data-icon="account_circle">account_circle</button>
+</div>
+</header>
+<div class="flex max-w-max-width mx-auto min-h-[calc(100vh-80px)]">
+<!-- SideNavBar -->
+<aside class="h-[calc(100vh-80px)] w-80 sticky left-0 top-20 border-r border-outline-variant flex flex-col p-stack-sm gap-stack-xs bg-surface-container-low">
+<div class="px-4 py-6 mb-4">
+<div class="text-primary font-headline-md font-bold">Dr. Silva</div>
+<div class="text-on-surface-variant font-label-lg">Dentista Sênior</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all font-label-lg rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                    Agenda
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-xl font-bold font-label-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                    Pacientes
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all font-label-lg rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="Description">description</span>
+                    Prontuários
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all font-label-lg rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                    Financeiro
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all font-label-lg rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Configurações
+                </a>
+</nav>
+<button class="mt-auto bg-primary text-on-primary font-button-text py-4 rounded-xl hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                Novo Agendamento
+            </button>
+</aside>
+<!-- Main Content (Behind Modal) -->
+<main class="flex-1 p-margin-safe space-y-stack-md bg-background overflow-y-auto">
+<section class="space-y-4">
+<h1 class="font-headline-lg text-headline-lg text-primary">Perfil do Paciente</h1>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8 flex flex-col items-center gap-6">
+<div class="w-32 h-32 rounded-full border-2 border-primary-container p-1">
+<img class="w-full h-full rounded-full object-cover" data-alt="A clinical, professional portrait of a smiling female patient in a bright, modern dental office. The lighting is soft and natural, emphasizing a clean and high-end atmosphere. The background shows a blurry dental chair and high-tech equipment in soft lilac and white tones, matching the healthcare aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByoBI85e54Bm925yGfeZZdexUBlzR-PbTj2qhomwtbN8QgJ1Nj-iBlYIu8cDQw9ZV62ays5G2nf_LazZhkh-21hn8xjlXTd4MdvuqxZ8_YQpxn9Q1cAD4UqXqo5ykVqBSUT48oJnNvCFNf5Vt2hzqMu4Px4J9qNie0DK9IZQ30TDN8ooVLIvfa-VBEpCjVhG3FU6rPYq2kejtNbtAnZerAwdoowBIXebEkNTLRK4g356BEdKK_-NPVMKVNvdZGduHMj3N6qvQG6IIE"/>
+</div>
+<div class="text-center">
+<h2 class="font-headline-md text-headline-md">Carolina Mendonça de Oliveira</h2>
+<p class="text-on-surface-variant font-body-md">ID: #8829-X • Paciente desde 2021</p>
+</div>
+<div class="grid grid-cols-2 gap-4 w-full max-w-lg">
+<div class="p-4 bg-surface-container rounded-lg border border-outline-variant">
+<p class="text-on-surface-variant font-label-lg">Última Consulta</p>
+<p class="font-bold text-on-surface">15 Out, 2023</p>
+</div>
+<div class="p-4 bg-surface-container rounded-lg border border-outline-variant">
+<p class="text-on-surface-variant font-label-lg">Próxima Consulta</p>
+<p class="font-bold text-on-surface">02 Dez, 2023</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Confirmation Overlay (Modal) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-surface/40 modal-overlay" id="deleteModal">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-[2rem] border border-outline-variant p-8 shadow-xl animate-in fade-in zoom-in duration-300">
+<div class="flex flex-col items-center text-center space-y-6">
+<!-- Warning Icon -->
+<div class="w-20 h-20 bg-error-container rounded-full flex items-center justify-center text-error mb-2">
+<span class="material-symbols-outlined text-[48px]" data-icon="warning">warning</span>
+</div>
+<div class="space-y-2">
+<h2 class="font-headline-md text-headline-md text-on-surface">Tem certeza que deseja excluir?</h2>
+<p class="text-on-surface-variant font-body-md">Esta ação removerá todos os registros clínicos, exames e histórico de pagamentos permanentemente.</p>
+</div>
+<!-- Highlighted Patient Name -->
+<div class="w-full py-6 px-4 bg-surface-container rounded-2xl border border-primary-container/30">
+<span class="text-on-surface-variant font-label-lg block mb-1">Paciente selecionado</span>
+<span class="font-headline-md text-primary block">Carolina Mendonça de Oliveira</span>
+</div>
+<div class="w-full flex flex-col gap-3 pt-4">
+<!-- Delete Button (Initially Disabled) -->
+<button class="w-full h-14 bg-error/10 text-error/50 font-button-text rounded-xl border border-error/20 flex items-center justify-center gap-3 cursor-not-allowed transition-all relative overflow-hidden group" disabled="" id="confirmDelete">
+<span id="deleteBtnText">Aguarde 5...</span>
+<!-- Visual count progress (optional polish) -->
+<div class="absolute bottom-0 left-0 h-1 bg-error/20 transition-all duration-1000 w-0" id="progressFill"></div>
+</button>
+<!-- Cancel Button -->
+<button class="w-full h-14 bg-surface-container-highest text-on-surface font-button-text rounded-xl hover:bg-outline-variant transition-colors flex items-center justify-center" onclick="closeModal()">
+                        Cancelar
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        let timeLeft = 5;
+        const deleteBtn = document.getElementById('confirmDelete');
+        const deleteBtnText = document.getElementById('deleteBtnText');
+        const progressFill = document.getElementById('progressFill');
+        const modal = document.getElementById('deleteModal');
+
+        function startCountdown() {
+            const timer = setInterval(() => {
+                timeLeft--;
+                progressFill.style.width = `${(5 - timeLeft) * 20}%`;
+                
+                if (timeLeft > 0) {
+                    deleteBtnText.innerText = `Aguarde ${timeLeft}...`;
+                } else {
+                    clearInterval(timer);
+                    enableDelete();
+                }
+            }, 1000);
+        }
+
+        function enableDelete() {
+            deleteBtn.disabled = false;
+            deleteBtn.classList.remove('bg-error/10', 'text-error/50', 'cursor-not-allowed');
+            deleteBtn.classList.add('bg-error', 'text-on-error', 'hover:bg-error/90', 'active:scale-[0.98]', 'shadow-md');
+            deleteBtnText.innerText = 'Excluir definitivamente';
+            progressFill.style.display = 'none';
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                // In a real app, this would route back or close the state
+                console.log('Modal closed');
+            }, 300);
+        }
+
+        // Initialize countdown on load
+        window.onload = startCountdown;
+
+        // Interaction logic
+        deleteBtn.addEventListener('click', () => {
+            if(!deleteBtn.disabled) {
+                deleteBtnText.innerText = 'Excluindo...';
+                deleteBtn.classList.add('opacity-70');
+                setTimeout(() => {
+                    alert('Paciente Carolina Mendonça de Oliveira excluída com sucesso.');
+                    closeModal();
+                }, 1500);
+            }
+        });
+    </script>
+</body></html>
