@@ -120,38 +120,90 @@ export function AdultFormPage() {
         {tab === 'anamnese' && (
           <Card className="flex flex-col gap-stack-md">
             <h2 className="font-headline-md text-headline-md text-secondary">Questionário de Saúde</h2>
+
+            {/* Tratamento médico geral */}
             <div className="flex flex-col">
               <SimNaoToggle label="Está sob tratamento médico atualmente?" value={a.sobTratamentoMedico} onChange={(v) => setAnamnese({ sobTratamentoMedico: v })} />
+              <SimNaoToggle label="É hipertenso ou diabético?" value={a.hipertensoDiabetico} onChange={(v) => setAnamnese({ hipertensoDiabetico: v })} />
+              <SimNaoToggle label="Já teve problemas com anestesia local?" value={a.problemaAnestesia} onChange={(v) => setAnamnese({ problemaAnestesia: v })} />
+              <SimNaoToggle label="As gengivas sangram com facilidade?" value={a.gengivasSangram} onChange={(v) => setAnamnese({ gengivasSangram: v })} />
+              <SimNaoToggle label="Há retenção de alimentos entre os dentes?" value={a.retencaoAlimentos} onChange={(v) => setAnamnese({ retencaoAlimentos: v })} />
+              <SimNaoToggle label="Está grávida?" value={a.gravida} onChange={(v) => setAnamnese({ gravida: v })} />
+              {a.gravida === 'sim' && (
+                <div className="py-2 pl-4">
+                  <TextField label="De quantos meses?" value={a.gravidaMes} onChange={(v) => setAnamnese({ gravidaMes: v })} />
+                </div>
+              )}
+            </div>
+
+            {/* item 4 — Enfermidades com toggle + campo livre */}
+            <div className="flex flex-col border-t border-outline-variant pt-stack-sm">
+              <SimNaoToggle
+                label="Possui alguma enfermidade?"
+                value={a.temEnfermidades}
+                onChange={(v) => setAnamnese({ temEnfermidades: v, enfermidades: v === 'nao' ? [] : a.enfermidades })}
+              />
+              {a.temEnfermidades === 'sim' && (
+                <div className="flex flex-col gap-3 mt-3 pl-4">
+                  <CheckboxGroup label="Enfermidades" options={ENFERMIDADES} values={a.enfermidades} onChange={(v) => setAnamnese({ enfermidades: v })} />
+                  <TextField label="Outra enfermidade" value={a.outraEnfermidade} onChange={(v) => setAnamnese({ outraEnfermidade: v })} />
+                </div>
+              )}
+            </div>
+
+            {/* Alergias a medicamento / alimento */}
+            <div className="flex flex-col border-t border-outline-variant pt-stack-sm">
               <SimNaoToggle label="Possui alergia a algum medicamento?" value={a.alergiaMedicamento} onChange={(v) => setAnamnese({ alergiaMedicamento: v })} />
               {a.alergiaMedicamento === 'sim' && (
-                <div className="py-2">
+                <div className="py-2 pl-4">
                   <TextField label="Qual medicamento?" value={a.alergiaMedicamentoQual} onChange={(v) => setAnamnese({ alergiaMedicamentoQual: v })} />
                 </div>
               )}
               <SimNaoToggle label="Possui alergia a algum alimento?" value={a.alergiaAlimento} onChange={(v) => setAnamnese({ alergiaAlimento: v })} />
               {a.alergiaAlimento === 'sim' && (
-                <div className="py-2">
+                <div className="py-2 pl-4">
                   <TextField label="Qual alimento?" value={a.alergiaAlimentoQual} onChange={(v) => setAnamnese({ alergiaAlimentoQual: v })} />
                 </div>
               )}
-              <SimNaoToggle label="É hipertenso ou diabético?" value={a.hipertensoDiabetico} onChange={(v) => setAnamnese({ hipertensoDiabetico: v })} />
-              <SimNaoToggle label="Já teve problemas com anestesia local?" value={a.problemaAnestesia} onChange={(v) => setAnamnese({ problemaAnestesia: v })} />
-              <SimNaoToggle label="As gengivas sangram com facilidade?" value={a.gengivasSangram} onChange={(v) => setAnamnese({ gengivasSangram: v })} />
-              <SimNaoToggle label="Há retenção de alimentos entre os dentes?" value={a.retencaoAlimentos} onChange={(v) => setAnamnese({ retencaoAlimentos: v })} />
-              <SimNaoToggle label="Morde lápis / caneta?" value={a.mordeLapis} onChange={(v) => setAnamnese({ mordeLapis: v })} />
-              <SimNaoToggle label="Rói as unhas?" value={a.roiUnhas} onChange={(v) => setAnamnese({ roiUnhas: v })} />
-              <SimNaoToggle label="Tem dentes sensíveis ao frio / doces?" value={a.dentesSensiveis} onChange={(v) => setAnamnese({ dentesSensiveis: v })} />
-              <SimNaoToggle label="Está grávida?" value={a.gravida} onChange={(v) => setAnamnese({ gravida: v })} />
-              {a.gravida === 'sim' && (
-                <div className="py-2">
-                  <TextField label="De quantos meses?" value={a.gravidaMes} onChange={(v) => setAnamnese({ gravidaMes: v })} />
+
+              {/* item 2 — Alergias conhecidas com toggle */}
+              <SimNaoToggle
+                label="Possui alergias conhecidas (Aspirina, Penicilina…)?"
+                value={a.temAlergias}
+                onChange={(v) => setAnamnese({ temAlergias: v, alergias: v === 'nao' ? [] : a.alergias })}
+              />
+              {a.temAlergias === 'sim' && (
+                <div className="mt-3 pl-4">
+                  <CheckboxGroup label="Marque as alergias" options={ALERGIAS} values={a.alergias} onChange={(v) => setAnamnese({ alergias: v })} />
                 </div>
               )}
             </div>
-            <CheckboxGroup label="Enfermidades" options={ENFERMIDADES} values={a.enfermidades} onChange={(v) => setAnamnese({ enfermidades: v })} />
-            <CheckboxGroup label="Uso de anestésicos / drogas" options={ANESTESICOS} values={a.anestesicos} onChange={(v) => setAnamnese({ anestesicos: v })} />
-            <CheckboxGroup label="Alergias conhecidas" options={ALERGIAS} values={a.alergias} onChange={(v) => setAnamnese({ alergias: v })} />
-            <TextField label="Outros vícios" value={a.outrosVicios} onChange={(v) => setAnamnese({ outrosVicios: v })} />
+
+            {/* item 3 — Hábitos e vícios agrupados */}
+            <div className="flex flex-col border-t border-outline-variant pt-stack-sm">
+              <p className="font-label-lg text-label-lg text-secondary mb-1">Hábitos e vícios</p>
+              <SimNaoToggle label="Morde lápis / caneta?" value={a.mordeLapis} onChange={(v) => setAnamnese({ mordeLapis: v })} />
+              <SimNaoToggle label="Rói as unhas?" value={a.roiUnhas} onChange={(v) => setAnamnese({ roiUnhas: v })} />
+              <div className="py-3">
+                <TextField label="Outros vícios" value={a.outrosVicios} onChange={(v) => setAnamnese({ outrosVicios: v })} placeholder="Ex: bruxismo, apertar os dentes…" />
+              </div>
+            </div>
+
+            {/* item 1 — Dentes sensíveis com duas opções */}
+            <div className="flex flex-col border-t border-outline-variant pt-stack-sm">
+              <CheckboxGroup
+                label="Dentes sensíveis"
+                options={['Ao frio', 'A doces']}
+                values={a.dentesSensiveisOpcoes}
+                onChange={(v) => setAnamnese({ dentesSensiveisOpcoes: v })}
+              />
+            </div>
+
+            {/* Uso de anestésicos / drogas */}
+            <div className="border-t border-outline-variant pt-stack-sm">
+              <CheckboxGroup label="Uso de anestésicos / drogas" options={ANESTESICOS} values={a.anestesicos} onChange={(v) => setAnamnese({ anestesicos: v })} />
+            </div>
+
             <TextArea label="Observações médicas relevantes" rows={4} value={a.observacoes} onChange={(v) => setAnamnese({ observacoes: v })} />
           </Card>
         )}
@@ -163,7 +215,8 @@ export function AdultFormPage() {
             <Odontograma tipo="adulto" value={draft.odontograma} onChange={(o) => set({ odontograma: o })} />
             <h2 className="font-headline-md text-headline-md text-secondary border-t border-outline-variant pt-stack-md">Condições Gerais</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-              <SelectField label="Higiene" value={e.higiene} onChange={(v) => setExame({ higiene: v })} options={['Ótima', 'Boa', 'Regular', 'Precária']} />
+              {/* item 5 — opções de higiene atualizadas */}
+              <SelectField label="Higiene" value={e.higiene} onChange={(v) => setExame({ higiene: v })} options={['Normal', 'Regular', 'Deficiente']} />
               <SelectField label="Halitose" value={e.halitose} onChange={(v) => setExame({ halitose: v })} options={['Ausente', 'Moderada', 'Forte']} />
               <SelectField label="Tártaro" value={e.tartaro} onChange={(v) => setExame({ tartaro: v })} options={['Ausente', 'Pouco', 'Muito']} />
               <SelectField label="Gengiva" value={e.gengiva} onChange={(v) => setExame({ gengiva: v })} options={['Normal', 'Gengivite', 'Periodontite']} />
@@ -171,8 +224,11 @@ export function AdultFormPage() {
               <TextField label="Língua" value={e.lingua} onChange={(v) => setExame({ lingua: v })} />
               <TextField label="Palato" value={e.palato} onChange={(v) => setExame({ palato: v })} />
               <TextField label="Assoalho bucal" value={e.assoalho} onChange={(v) => setExame({ assoalho: v })} />
+              {/* item 6 — Lábios no lugar de Tecidos moles */}
+              <TextField label="Lábios" value={e.labios} onChange={(v) => setExame({ labios: v })} />
             </div>
-            <TextArea label="Tecidos moles (gengivas, língua, bochechas…)" rows={4} value={e.tecidosMoles} onChange={(v) => setExame({ tecidosMoles: v })} />
+            {/* item 6 — campo separado para outras observações */}
+            <TextArea label="Outras observações" rows={4} value={e.outrasObservacoes} onChange={(v) => setExame({ outrasObservacoes: v })} placeholder="Bochechas, freios, glândulas salivares, lesões…" />
           </Card>
         )}
 

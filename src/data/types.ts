@@ -41,18 +41,22 @@ export interface AdultAnamnese {
   alergiaAlimentoQual?: string;
   mordeLapis?: SimNao;
   roiUnhas?: SimNao;
+  outrosVicios?: string;
   gravida?: SimNao;
   gravidaMes?: string;
-  dentesSensiveis?: SimNao;
-  outrosVicios?: string;
+  dentesSensiveis?: SimNao;           // mantido para compatibilidade com dados antigos
+  dentesSensiveisOpcoes?: string[];   // ["Ao frio", "A doces"]
   sobTratamentoMedico?: SimNao;
   hipertensoDiabetico?: SimNao;
   problemaAnestesia?: SimNao;
-  // Enfermidades (checkboxes)
+  // Enfermidades
+  temEnfermidades?: SimNao;
   enfermidades?: string[];
+  outraEnfermidade?: string;
   // Anestésicos / drogas
   anestesicos?: string[];
   // Alergias conhecidas
+  temAlergias?: SimNao;
   alergias?: string[];
   observacoes?: string;
 }
@@ -68,7 +72,8 @@ export interface AdultExame {
   palato?: string;
   assoalho?: string;
   labios?: string;
-  tecidosMoles?: string;
+  tecidosMoles?: string;      // mantido para compatibilidade com dados antigos
+  outrasObservacoes?: string;
 }
 
 /** Ficha infantil (§8) — anamnese, hábitos, higiene, histórico, etc. */
