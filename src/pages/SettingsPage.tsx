@@ -1,23 +1,31 @@
+import { useEffect } from 'react';
 import { usePatients, useBackups } from '../data/store';
 import { useAuth } from '../data/auth';
+import { mockRecoveryKey, runningInTauri } from '../data/backend';
 import { Layout } from '../components/Layout';
 import { Icon } from '../components/Icon';
 import { Card } from '../components/ui';
 import { useToast } from '../components/Toast';
 
-// Backup e Segurança (§9.5 / Etapa 10, mock).
-// Backup manual + histórico das últimas cópias. O backup automático "ao fechar"
-// seria disparado no evento de fechamento da janela do Tauri.
+// Backup e Segurança (§9.5 / Etapa 10).
+// No app Tauri o backup copia o arquivo .db criptografado de verdade; no
+// navegador (mock) a cópia é simbólica. O backup automático "ao fechar" é
+// disparado pela camada Rust no evento de fechamento da janela.
 
 export function SettingsPage() {
   const toast = useToast();
   const patients = usePatients((s) => s.patients);
   const resetToSeed = usePatients((s) => s.resetToSeed);
-  const { backups, fazerBackup } = useBackups();
-  const chave = useAuth((s) => s.chaveRecuperacao);
+  const { backups, load, fazerBackup } = useBackups();
+  const chaveSessao = useAuth((s) => s.chaveRecuperacao);
+  const chave = chaveSessao ?? mockRecoveryKey();
 
-  function backupAgora() {
-    const entry = fazerBackup('manual', patients.length);
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  async function backupAgora() {
+    const entry = await fazerBackup();
     toast.show(`Backup criado (${entry.registros} registros).`);
   }
 
@@ -45,17 +53,17 @@ export function SettingsPage() {
           <div className="mt-4">
             <h3 className="font-label-lg text-label-lg text-secondary mb-2">Últimas cópias</h3>
             {backups.length === 0 ? (
-              <p className="text-on-surface-variant italic">Nenhum backup manual gerado ainda.</p>
+              <p className="text-on-surface-variant italic">Nenhum backup gerado ainda.</p>
             ) : (
               <ul className="divide-y divide-outline-variant">
                 {backups.map((b) => (
-                  <li key={b.id} className="flex items-center justify-between py-3">
-                    <span className="flex items-center gap-2">
-                      <Icon name="folder_zip" className="text-on-surface-variant" />
-                      {new Date(b.criadoEm).toLocaleString('pt-BR')}
+                  <li key={b.id} className="flex items-center justify-between py-3 gap-3">
+                    <span className="flex items-center gap-2 min-w-0">
+                      <Icon name="folder_zip" className="text-on-surface-variant flex-shrink-0" />
+                      <span className="truncate">{new Date(b.criadoEm).toLocaleString('pt-BR')}</span>
                     </span>
-                    <span className="text-on-surface-variant text-sm">
-                      {b.registros} registros · {b.tipo}
+                    <span className="text-on-surface-variant text-sm whitespace-nowrap">
+                      {b.registros} reg. · {b.tipo}
                     </span>
                   </li>
                 ))}
@@ -77,19 +85,25 @@ export function SettingsPage() {
             <span className="font-label-lg text-secondary uppercase tracking-widest block mb-2">
               Sua chave
             </span>
-            <span className="text-[28px] font-extrabold text-primary break-all select-all">
-              {chave ?? '—'}
-            </span>
+            {chave ? (
+              <span className="text-[28px] font-extrabold text-primary break-all select-all">{chave}</span>
+            ) : (
+              <span className="text-body-md text-on-surface-variant">
+                A chave só é exibida uma vez, no primeiro acesso. Guarde-a com cuidado — ela não pode ser
+                consultada de novo por segurança.
+              </span>
+            )}
           </div>
 
           <div className="mt-4 border-t border-outline-variant pt-4">
-            <h3 className="font-label-lg text-label-lg text-secondary mb-2">Dados (mock)</h3>
+            <h3 className="font-label-lg text-label-lg text-secondary mb-2">Dados</h3>
             <p className="text-on-surface-variant text-sm mb-3">
-              {patients.length} pacientes carregados. Você pode restaurar a base de demonstração.
+              {patients.length} pacientes carregados{' '}
+              {runningInTauri() ? '(banco local criptografado)' : '(modo demonstração no navegador)'}.
             </p>
             <button
-              onClick={() => {
-                resetToSeed();
+              onClick={async () => {
+                await resetToSeed();
                 toast.show('Base de demonstração restaurada.', 'info');
               }}
               className="h-12 px-6 rounded-lg border-2 border-outline-variant text-on-surface-variant hover:bg-surface-container-highest transition-all flex items-center gap-2"

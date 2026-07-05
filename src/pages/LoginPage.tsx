@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../data/auth';
 import { Icon } from '../components/Icon';
@@ -6,61 +6,68 @@ import { useToast } from '../components/Toast';
 
 type Mode = 'entrar' | 'criar' | 'recuperar';
 
-// Tela de abertura (§3 / Etapa 2, mock). Três modos:
-//  - criar: primeiro uso, cria senha simples e gera a chave de recuperação
+// Tela de abertura (§3 / Etapa 2). Três modos:
+//  - criar: primeiro uso, cria senha simples (com confirmação) e gera a chave
 //  - entrar: desbloquear com a senha
 //  - recuperar: usa a chave de recuperação para definir nova senha
 
 export function LoginPage() {
   const navigate = useNavigate();
   const toast = useToast();
-  const { senha: senhaDefinida, definirSenha, entrar, recuperarComChave } = useAuth();
+  const { initialized, refreshInit, definirSenha, entrar, recuperarComChave } = useAuth();
 
-  const primeiraVez = !senhaDefinida;
-  const [mode, setMode] = useState<Mode>(primeiraVez ? 'criar' : 'entrar');
+  const [mode, setMode] = useState<Mode | null>(null);
   const [senha, setSenha] = useState('');
   const [confirmar, setConfirmar] = useState('');
   const [chave, setChave] = useState('');
   const [erro, setErro] = useState('');
+  const [ocupado, setOcupado] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    void refreshInit();
+  }, [refreshInit]);
+
+  // Define o modo inicial assim que sabemos se já existe senha cadastrada.
+  useEffect(() => {
+    if (mode === null && initialized !== null) setMode(initialized ? 'entrar' : 'criar');
+  }, [initialized, mode]);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErro('');
-
-    if (mode === 'criar') {
-      if (!senha.trim()) {
-        setErro('Escolha uma senha (pode ser simples).');
+    setOcupado(true);
+    try {
+      if (mode === 'criar') {
+        if (!senha.trim()) return setErro('Escolha uma senha (pode ser simples).');
+        if (senha !== confirmar) return setErro('As senhas não são iguais. Confira e digite de novo.');
+        await definirSenha(senha.trim());
+        navigate('/chave-recuperacao');
         return;
       }
-      if (senha !== confirmar) {
-        setErro('As senhas não são iguais. Confira e digite de novo.');
+      if (mode === 'entrar') {
+        if (await entrar(senha)) navigate('/pacientes');
+        else setErro('Senha incorreta. Tente novamente.');
         return;
       }
-      definirSenha(senha.trim());
-      navigate('/chave-recuperacao');
-      return;
-    }
-
-    if (mode === 'entrar') {
-      if (entrar(senha)) {
+      // recuperar
+      if (!senha.trim()) return setErro('Digite a nova senha.');
+      if (await recuperarComChave(chave, senha.trim())) {
+        toast.show('Senha redefinida com sucesso!');
         navigate('/pacientes');
       } else {
-        setErro('Senha incorreta. Tente novamente.');
+        setErro('Chave de recuperação inválida.');
       }
-      return;
+    } finally {
+      setOcupado(false);
     }
+  }
 
-    // recuperar
-    if (!senha.trim()) {
-      setErro('Digite a nova senha.');
-      return;
-    }
-    if (recuperarComChave(chave, senha.trim())) {
-      toast.show('Senha redefinida com sucesso!');
-      navigate('/pacientes');
-    } else {
-      setErro('Chave de recuperação inválida.');
-    }
+  if (mode === null) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center text-on-surface-variant">
+        <Icon name="progress_activity" className="text-4xl animate-spin" />
+      </div>
+    );
   }
 
   const titulos: Record<Mode, { titulo: string; sub: string; botao: string }> = {
@@ -149,10 +156,11 @@ export function LoginPage() {
 
             <button
               type="submit"
-              className="w-full h-20 bg-primary text-on-primary font-button-text text-button-text rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-3"
+              disabled={ocupado}
+              className="w-full h-20 bg-primary text-on-primary font-button-text text-button-text rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-3 disabled:opacity-60"
             >
               {t.botao}
-              <Icon name="arrow_forward" />
+              <Icon name={ocupado ? 'progress_activity' : 'arrow_forward'} className={ocupado ? 'animate-spin' : ''} />
             </button>
 
             {mode === 'entrar' && (
