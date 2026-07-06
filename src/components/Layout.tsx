@@ -18,7 +18,7 @@ function Sidebar() {
   return (
     <aside className="hidden md:flex h-screen w-80 sticky left-0 top-0 flex-col p-stack-sm gap-stack-xs bg-surface-container-low border-r border-outline-variant">
       <div className="flex items-center gap-3 px-4 py-8">
-        <img src="/app-icon.svg" alt="OdontoApp" className="w-12 h-12" />
+        <img src="/tooth.svg" alt="OdontoApp" className="w-12 h-12" />
         <div>
           <span className="text-headline-md font-headline-md font-bold text-primary block leading-tight">
             OdontoApp

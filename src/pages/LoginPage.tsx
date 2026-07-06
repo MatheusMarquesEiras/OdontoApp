@@ -88,7 +88,7 @@ export function LoginPage() {
       <main className="relative z-10 w-full max-w-[520px] px-stack-sm animate-fade-in">
         <div className="text-center mb-stack-lg">
           <div className="inline-flex items-center justify-center mb-stack-sm">
-            <img src="/app-icon.svg" alt="OdontoApp" className="w-24 h-24 drop-shadow-md" />
+            <img src="/tooth.svg" alt="OdontoApp" className="w-24 h-24 drop-shadow-md" />
           </div>
           <h1 className="font-headline-lg text-headline-lg text-primary tracking-tight">{t.titulo}</h1>
           <p className="font-body-md text-body-md text-on-surface-variant mt-stack-xs opacity-80">{t.sub}</p>
