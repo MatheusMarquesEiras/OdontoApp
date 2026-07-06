@@ -52,7 +52,7 @@ export function SaveBar({
   onSave: () => void;
 }) {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-surface/90 backdrop-blur-md border-t border-outline-variant py-5 px-margin-safe z-40">
+    <footer className="fixed bottom-0 left-0 md:left-80 right-0 bg-surface/90 backdrop-blur-md border-t border-outline-variant py-5 px-margin-safe z-40">
       <div className="max-w-max-width mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="hidden md:flex flex-col">
           <span className="font-label-lg text-primary">Editando paciente:</span>
