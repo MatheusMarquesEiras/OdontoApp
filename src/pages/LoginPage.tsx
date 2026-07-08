@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../data/auth';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
+import { version } from '../../package.json';
 
 type Mode = 'entrar' | 'criar' | 'recuperar';
 
@@ -195,7 +196,7 @@ export function LoginPage() {
         </div>
 
         <p className="mt-stack-lg text-center font-body-md text-on-surface-variant text-[14px]">
-          Sistema de Gestão Clínica · v1.0.0
+          Sistema de Gestão Clínica · v{version}
         </p>
 
         {import.meta.env.DEV && (
