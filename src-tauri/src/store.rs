@@ -35,7 +35,7 @@ struct KeyFile {
     wrapped_rec: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct BackupEntry {
     pub id: String,
@@ -284,6 +284,27 @@ fn count_patients(dir: &Path) -> i64 {
 }
 
 // ── Backup ───────────────────────────────────────────────────
+/// Índice dos backups salvos fora da pasta interna (ver `backup_to`),
+/// para que também apareçam em "Últimas cópias".
+fn external_index_path(dir: &Path) -> PathBuf {
+    backups_dir(dir).join("externos.json")
+}
+
+fn load_external_backups(dir: &Path) -> Vec<BackupEntry> {
+    fs::read_to_string(external_index_path(dir))
+        .ok()
+        .and_then(|s| serde_json::from_str(&s).ok())
+        .unwrap_or_default()
+}
+
+fn save_external_backups(dir: &Path, list: &[BackupEntry]) {
+    if ensure_dir(&backups_dir(dir)).is_ok() {
+        if let Ok(json) = serde_json::to_string_pretty(list) {
+            let _ = fs::write(external_index_path(dir), json);
+        }
+    }
+}
+
 /// Copia o arquivo do banco para um caminho escolhido pelo usuário.
 pub fn backup_to(src_dir: &Path, dest: &Path) -> Result<BackupEntry, String> {
     let src = db_path(src_dir);
@@ -297,13 +318,19 @@ pub fn backup_to(src_dir: &Path, dest: &Path) -> Result<BackupEntry, String> {
     }
     let registros = count_patients(src_dir);
     fs::copy(&src, dest).map_err(|e| e.to_string())?;
-    Ok(BackupEntry {
+    let entry = BackupEntry {
         id: dest.file_name().unwrap_or_default().to_string_lossy().to_string(),
         criado_em: chrono::Utc::now().to_rfc3339(),
         registros,
-        tipo: "manual".into(),
+        tipo: "externo".into(),
         caminho: dest.to_string_lossy().to_string(),
-    })
+    };
+    let mut list = load_external_backups(src_dir);
+    list.retain(|b| b.caminho != entry.caminho); // regravou no mesmo lugar → substitui
+    list.insert(0, entry.clone());
+    list.truncate(8);
+    save_external_backups(src_dir, &list);
+    Ok(entry)
 }
 
 /// Copia o arquivo do banco para backups/ carimbado com data e nº de registros.
@@ -347,16 +374,14 @@ fn prune_backups(bdir: &Path, keep: usize) {
 
 pub fn list_backups(dir: &Path) -> Vec<BackupEntry> {
     let bdir = backups_dir(dir);
-    let mut files: Vec<PathBuf> = match fs::read_dir(&bdir) {
+    let files: Vec<PathBuf> = match fs::read_dir(&bdir) {
         Ok(rd) => rd
             .filter_map(|e| e.ok().map(|e| e.path()))
             .filter(|p| p.extension().map(|x| x == "db").unwrap_or(false))
             .collect(),
-        Err(_) => return Vec::new(),
+        Err(_) => Vec::new(),
     };
-    files.sort();
-    files.reverse(); // mais recentes primeiro
-    files
+    let mut all: Vec<BackupEntry> = files
         .into_iter()
         .map(|p| {
             let nome = p.file_name().unwrap_or_default().to_string_lossy().to_string();
@@ -379,7 +404,16 @@ pub fn list_backups(dir: &Path) -> Vec<BackupEntry> {
                 caminho: p.to_string_lossy().to_string(),
             }
         })
-        .collect()
+        .collect();
+    // Junta os backups salvos em locais escolhidos pelo usuário (se ainda existirem —
+    // um pendrive removido some da lista até ser plugado de novo).
+    all.extend(
+        load_external_backups(dir)
+            .into_iter()
+            .filter(|b| Path::new(&b.caminho).exists()),
+    );
+    all.sort_by(|a, b| b.criado_em.cmp(&a.criado_em)); // mais recentes primeiro
+    all
 }
 
 #[cfg(test)]

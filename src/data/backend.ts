@@ -13,7 +13,7 @@ export interface BackupEntry {
   id: string;
   criadoEm: string;
   registros: number;
-  tipo: 'automatico' | 'manual';
+  tipo: 'automatico' | 'manual' | 'externo';
   caminho?: string;
 }
 
@@ -148,7 +148,7 @@ const mockBackend: Backend = {
       id: `bkp-${Date.now().toString(36)}`,
       criadoEm: new Date().toISOString(),
       registros,
-      tipo: 'manual',
+      tipo: 'externo',
       caminho: path,
     };
     const list = [entry, ...readJson<BackupEntry[]>(BKP_KEY, [])].slice(0, 8);
