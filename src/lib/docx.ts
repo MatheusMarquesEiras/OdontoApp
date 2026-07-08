@@ -103,6 +103,15 @@ function buildAdult(p: Patient): Paragraph[] {
   const a = p.anamnese ?? {};
   const e = p.exame ?? {};
   const sn = (v?: string) => (v === 'sim' ? 'Sim' : v === 'nao' ? 'Não' : '—');
+  // Enfermidades marcadas + campo livre "outra enfermidade"
+  const enfermidades = [
+    ...(a.enfermidades ?? []),
+    ...(a.outraEnfermidade?.trim() ? [a.outraEnfermidade.trim()] : []),
+  ].join(', ');
+  // Formato novo (opções marcadas) com fallback para o sim/não antigo
+  const dentesSensiveis = a.dentesSensiveisOpcoes?.length
+    ? a.dentesSensiveisOpcoes.join(', ')
+    : sn(a.dentesSensiveis);
   return [
     heading('Dados Pessoais'),
     field('Nome', p.nome),
@@ -118,16 +127,30 @@ function buildAdult(p: Patient): Paragraph[] {
     field('Sob tratamento médico', sn(a.sobTratamentoMedico)),
     field('Hipertenso / Diabético', sn(a.hipertensoDiabetico)),
     field('Problema com anestesia', sn(a.problemaAnestesia)),
+    field('Gengivas sangram com facilidade', sn(a.gengivasSangram)),
+    field('Retenção de alimentos', sn(a.retencaoAlimentos)),
+    field('Grávida', a.gravida === 'sim' && a.gravidaMes ? `Sim — ${a.gravidaMes} meses` : sn(a.gravida)),
     field('Alergia a medicamento', a.alergiaMedicamento === 'sim' ? `Sim — ${a.alergiaMedicamentoQual ?? ''}` : sn(a.alergiaMedicamento)),
-    field('Enfermidades', (a.enfermidades ?? []).join(', ')),
-    field('Alergias', (a.alergias ?? []).join(', ')),
+    field('Alergia a alimento', a.alergiaAlimento === 'sim' ? `Sim — ${a.alergiaAlimentoQual ?? ''}` : sn(a.alergiaAlimento)),
+    field('Alergias conhecidas', (a.alergias ?? []).join(', ')),
+    field('Enfermidades', enfermidades),
+    field('Dentes sensíveis', dentesSensiveis),
+    field('Morde lápis / caneta', sn(a.mordeLapis)),
+    field('Rói as unhas', sn(a.roiUnhas)),
+    field('Outros vícios', a.outrosVicios),
+    field('Uso de anestésicos / drogas', (a.anestesicos ?? []).join(', ')),
     field('Observações', a.observacoes),
     heading('Exame Intra-oral'),
     field('Higiene', e.higiene),
     field('Halitose', e.halitose),
     field('Tártaro', e.tartaro),
     field('Gengiva', e.gengiva),
-    field('Tecidos moles', e.tecidosMoles ?? e.mucosa),
+    field('Mucosa', e.mucosa),
+    field('Língua', e.lingua),
+    field('Palato', e.palato),
+    field('Assoalho bucal', e.assoalho),
+    field('Lábios', e.labios),
+    field('Outras observações', e.outrasObservacoes ?? e.tecidosMoles),
     field('Odontograma', resumoOdontograma(p.odontograma) || 'Sem alterações registradas'),
   ];
 }
