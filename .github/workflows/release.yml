@@ -1,0 +1,58 @@
+# Publicação automática de versões do OdontoApp.
+#
+# Como usar: suba o número da versão (tauri.conf.json + package.json + Cargo.toml),
+# faça o commit e crie uma tag começando com "v", por exemplo:
+#     git tag v1.3.0 && git push --tags
+# O GitHub compila o app no Windows, ASSINA os arquivos de atualização e publica
+# uma Release com os instaladores + o latest.json que o app usa para se atualizar.
+#
+# Requer dois segredos no repositório (Settings → Secrets and variables → Actions):
+#   TAURI_SIGNING_PRIVATE_KEY           → conteúdo do arquivo .tauri/odontoapp_updater.key
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD  → vazio (a chave foi gerada sem senha)
+
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache do Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Compilar, assinar e publicar
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'OdontoApp ${{ github.ref_name }}'
+          releaseBody: 'Atualização automática do OdontoApp. Seus dados e a sua senha são preservados.'
+          releaseDraft: false
+          prerelease: false
+          includeUpdaterJson: true

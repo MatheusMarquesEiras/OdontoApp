@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './data/auth';
 import { ToastProvider } from './components/Toast';
+import { UpdateChecker } from './components/UpdateChecker';
 import { LoginPage } from './pages/LoginPage';
 import { RecoveryKeyPage } from './pages/RecoveryKeyPage';
 import { PatientsListPage } from './pages/PatientsListPage';
@@ -26,6 +27,8 @@ function Root() {
 export default function App() {
   return (
     <ToastProvider>
+      {/* Verifica atualização ao abrir (só no app desktop) e pergunta se deseja instalar. */}
+      <UpdateChecker />
       {/* HashRouter: funciona bem tanto no navegador quanto no webview do Tauri (file://). */}
       <HashRouter>
         <Routes>
