@@ -4,6 +4,8 @@
   "version": "1.2.0",
   "type": "module",
   "description": "Sistema desktop de registro de pacientes para clínica odontológica (adultos + crianças).",
+  "license": "MIT",
+  "author": "Matheus Marques Eiras",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
