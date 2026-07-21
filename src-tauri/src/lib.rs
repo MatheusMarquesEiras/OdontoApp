@@ -75,6 +75,15 @@ fn db_recover(
 }
 
 #[tauri::command]
+fn db_change_password(
+    app: tauri::AppHandle,
+    senha_atual: String,
+    nova_senha: String,
+) -> Result<bool, String> {
+    store::change_password(&data_dir(&app)?, &senha_atual, &nova_senha)
+}
+
+#[tauri::command]
 fn db_lock(state: State<AppState>) -> Result<(), String> {
     let mut s = state.0.lock().map_err(|e| e.to_string())?;
     s.conn = None;
@@ -161,6 +170,7 @@ pub fn run() {
             db_setup,
             db_unlock,
             db_recover,
+            db_change_password,
             db_lock,
             db_list_patients,
             db_get_patient,

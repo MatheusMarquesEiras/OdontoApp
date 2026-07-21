@@ -2,6 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tokens temáveis registrados como <color>. Sem isto, o Chromium resolve
+ * `var(--c-…)` para o valor padrão em elementos com `transition-property: all`
+ * (bug conhecido de transição + variável). Registrar tipa a propriedade e faz
+ * a recoloração funcionar em todo lugar. O initial-value é a cor padrão (roxo),
+ * então, enquanto o Perfil não personaliza nada, a aparência é idêntica. */
+@property --c-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #70008b;
+}
+@property --c-primary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #8e24aa;
+}
+@property --c-on-primary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f7bcff;
+}
+@property --c-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #7e4a8a;
+}
+@property --c-secondary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f5b7fe;
+}
+@property --c-on-secondary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #754281;
+}
+@property --c-surface-tint {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #942cb0;
+}
+@property --c-inverse-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f3aeff;
+}
+@property --c-tertiary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #6b4f72;
+}
+@property --c-on-tertiary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e8c4ee;
+}
+@property --c-background {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fff7fc;
+}
+@property --c-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fff7fc;
+}
+@property --c-surface-container-low {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fdefff;
+}
+@property --c-surface-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f8e9fa;
+}
+@property --c-surface-container-high {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f2e4f4;
+}
+@property --c-surface-container-highest {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ecdeee;
+}
+@property --c-surface-variant {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ecdeee;
+}
+
 :root {
   color-scheme: light;
 }
@@ -15,9 +106,10 @@ body,
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #fff7fc;
+  background-color: var(--c-surface, #fff7fc);
   color: #201924;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease;
 }
 
 .material-symbols-outlined {
@@ -43,8 +135,39 @@ body {
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 3px solid #e1bee7 !important;
-  border-color: #70008b !important;
+  outline: 3px solid var(--c-secondary-container, #e1bee7) !important;
+  border-color: var(--c-primary, #70008b) !important;
+}
+
+/* Sliders da roleta de cores (Perfil). WebView é Chromium → ::-webkit- vale. */
+input[type='range'].theme-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 16px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+}
+input[type='range'].theme-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 3px solid var(--c-primary, #70008b);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+input[type='range'].theme-range::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 3px solid var(--c-primary, #70008b);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 /* Scrollbar suave em tom lilás */

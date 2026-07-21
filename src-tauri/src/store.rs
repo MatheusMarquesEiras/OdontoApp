@@ -199,6 +199,26 @@ pub fn recover(dir: &Path, chave: &str, nova_senha: &str) -> Result<Option<Maste
     Ok(Some(mk))
 }
 
+/// Troca a senha: valida a senha atual e re-embrulha só a cópia da senha da
+/// chave-mestra (os dados não são recifrados). Ok(false) = senha atual incorreta.
+pub fn change_password(dir: &Path, senha_atual: &str, nova_senha: &str) -> Result<bool, String> {
+    let mut kf = read_keyfile(dir)?;
+    let salt = hex::decode(&kf.salt_pwd).map_err(|e| e.to_string())?;
+    let key = derive_key(senha_atual.as_bytes(), &salt)?;
+    let wrapped = hex::decode(&kf.wrapped_pwd).map_err(|e| e.to_string())?;
+    let master = match open_seal(&wrapped, &key) {
+        Some(m) if m.len() == KEY_LEN => m,
+        _ => return Ok(false),
+    };
+    // re-embrulha a cópia da senha com a nova senha (novo salt + novo nonce)
+    let salt_pwd = random_bytes(SALT_LEN);
+    let key_pwd = derive_key(nova_senha.as_bytes(), &salt_pwd)?;
+    kf.salt_pwd = hex::encode(&salt_pwd);
+    kf.wrapped_pwd = hex::encode(seal(&master, &key_pwd)?);
+    write_keyfile(dir, &kf)?;
+    Ok(true)
+}
+
 // ── Banco ────────────────────────────────────────────────────
 pub fn open_db(dir: &Path) -> Result<Connection, String> {
     let conn = Connection::open(db_path(dir)).map_err(|e| e.to_string())?;
@@ -461,6 +481,16 @@ mod tests {
         assert_eq!(list_patients(&conn2, &m2).unwrap(), vec![json.to_string()]);
         assert!(unlock(&dir, "novaSenha").unwrap().is_some());
         assert!(unlock(&dir, "1234").unwrap().is_none()); // senha antiga não vale mais
+
+        // troca de senha: senha atual errada falha; certa troca e passa a valer
+        assert!(!change_password(&dir, "errada", "maisNova").unwrap());
+        assert!(change_password(&dir, "novaSenha", "maisNova").unwrap());
+        assert!(unlock(&dir, "maisNova").unwrap().is_some());
+        assert!(unlock(&dir, "novaSenha").unwrap().is_none());
+        // os dados continuam acessíveis após a troca (chave-mestra intacta)
+        let conn3 = open_db(&dir).unwrap();
+        let m3 = unlock(&dir, "maisNova").unwrap().unwrap();
+        assert_eq!(list_patients(&conn3, &m3).unwrap(), vec![json.to_string()]);
 
         // backup gera arquivo e aparece na listagem
         delete_patient(&conn2, "p1").unwrap();
