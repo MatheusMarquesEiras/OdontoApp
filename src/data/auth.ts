@@ -21,6 +21,7 @@ interface AuthState {
   definirSenha: (senha: string) => Promise<string>;
   entrar: (senha: string) => Promise<boolean>;
   recuperarComChave: (chave: string, novaSenha: string) => Promise<boolean>;
+  trocarSenha: (senhaAtual: string, novaSenha: string) => Promise<boolean>;
   bloquear: () => void;
 }
 
@@ -51,6 +52,7 @@ export const useAuth = create<AuthState>()((set) => ({
     }
     return ok;
   },
+  trocarSenha: async (senhaAtual, novaSenha) => backend.changePassword(senhaAtual, novaSenha),
   bloquear: () => {
     void backend.lock();
     usePatients.getState().clear();

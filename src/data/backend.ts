@@ -25,6 +25,8 @@ export interface Backend {
   unlock(senha: string): Promise<boolean>;
   /** Recupera o acesso com a chave e define nova senha. false = chave inválida. */
   recover(chave: string, novaSenha: string): Promise<boolean>;
+  /** Troca a senha (exige a senha atual). false = senha atual incorreta. */
+  changePassword(senhaAtual: string, novaSenha: string): Promise<boolean>;
   lock(): Promise<void>;
   listPatients(): Promise<Patient[]>;
   savePatient(p: Patient): Promise<void>;
@@ -51,6 +53,8 @@ const tauriBackend: Backend = {
   setup: (senha) => invoke('db_setup', { senha }),
   unlock: (senha) => invoke('db_unlock', { senha }),
   recover: (chave, novaSenha) => invoke('db_recover', { chave, novaSenha }),
+  changePassword: (senhaAtual, novaSenha) =>
+    invoke('db_change_password', { senhaAtual, novaSenha }),
   lock: () => invoke('db_lock'),
   listPatients: async () => {
     const rows = await invoke<string[]>('db_list_patients');
@@ -107,6 +111,14 @@ const mockBackend: Backend = {
   async recover(chave, novaSenha) {
     const auth = readJson<MockAuth | null>(AUTH_KEY, null);
     if (auth && norm(auth.chave) === norm(chave)) {
+      writeJson(AUTH_KEY, { senha: novaSenha, chave: auth.chave } satisfies MockAuth);
+      return true;
+    }
+    return false;
+  },
+  async changePassword(senhaAtual, novaSenha) {
+    const auth = readJson<MockAuth | null>(AUTH_KEY, null);
+    if (auth && auth.senha === senhaAtual) {
       writeJson(AUTH_KEY, { senha: novaSenha, chave: auth.chave } satisfies MockAuth);
       return true;
     }

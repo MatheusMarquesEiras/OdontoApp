@@ -9,6 +9,7 @@ import { NewPatientTypePage } from './pages/NewPatientTypePage';
 import { PatientFormPage } from './pages/PatientFormPage';
 import { DeleteConfirmPage } from './pages/DeleteConfirmPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { ProfilePage } from './pages/ProfilePage';
 
 // Rota protegida: exige o app desbloqueado (senha digitada nesta sessão).
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/paciente/:id" element={<RequireAuth><PatientFormPage /></RequireAuth>} />
           <Route path="/excluir/:id" element={<RequireAuth><DeleteConfirmPage /></RequireAuth>} />
           <Route path="/configuracoes" element={<RequireAuth><SettingsPage /></RequireAuth>} />
+          <Route path="/perfil" element={<RequireAuth><ProfilePage /></RequireAuth>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>

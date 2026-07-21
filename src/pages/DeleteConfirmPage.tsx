@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { usePatients } from '../data/store';
+import { useProfile } from '../data/profile';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 
 // Exclusão de paciente (§9.5 / Etapa 6): tela de confirmação separada com
 // o nome em destaque e contagem de 5 segundos antes de habilitar o botão.
+// A espera pode ser desligada no Perfil (com aviso dos riscos).
 
 export function DeleteConfirmPage() {
   const { id } = useParams();
@@ -13,8 +15,9 @@ export function DeleteConfirmPage() {
   const toast = useToast();
   const paciente = usePatients((s) => (id ? s.getPatient(id) : undefined));
   const deletePatient = usePatients((s) => s.deletePatient);
+  const deleteDelay = useProfile((s) => s.deleteDelay);
 
-  const [segundos, setSegundos] = useState(5);
+  const [segundos, setSegundos] = useState(deleteDelay ? 5 : 0);
 
   useEffect(() => {
     if (segundos <= 0) return;
