@@ -105,7 +105,7 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter Variable', 'Inter', system-ui, sans-serif;
   background-color: var(--c-surface, #fff7fc);
   color: #201924;
   -webkit-font-smoothing: antialiased;
