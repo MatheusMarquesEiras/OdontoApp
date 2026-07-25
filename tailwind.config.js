@@ -76,14 +76,16 @@ export default {
       maxWidth: {
         'max-width': '1280px',
       },
+      // 'Inter Variable' é o nome registrado pela fonte embutida (@fontsource);
+      // 'Inter' fica como reserva caso a pessoa já tenha a fonte instalada.
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        'button-text': ['Inter'],
-        'headline-lg': ['Inter'],
-        'headline-md': ['Inter'],
-        'label-lg': ['Inter'],
-        'body-lg': ['Inter'],
-        'body-md': ['Inter'],
+        sans: ['Inter Variable', 'Inter', 'system-ui', 'sans-serif'],
+        'button-text': ['Inter Variable', 'Inter'],
+        'headline-lg': ['Inter Variable', 'Inter'],
+        'headline-md': ['Inter Variable', 'Inter'],
+        'label-lg': ['Inter Variable', 'Inter'],
+        'body-lg': ['Inter Variable', 'Inter'],
+        'body-md': ['Inter Variable', 'Inter'],
       },
       fontSize: {
         'button-text': ['20px', { lineHeight: '1.2', fontWeight: '600' }],
